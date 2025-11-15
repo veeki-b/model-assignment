@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Store - Interactive 3D Product Viewer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <h2>3D Model Store</h2>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#home" class="nav-link">Home</a></li>
+                        <li><a href="#models" class="nav-link">3D Models</a></li>
+                        <li><a href="#categories" class="nav-link">Categories</a></li>
+                        <li><a href="#about" class="nav-link">About</a></li>
+                    </ul>
+                    <div class="nav-actions">
+                        <button class="cart-btn" id="cartBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </button>
+                        <button class="menu-toggle" id="menuToggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Featured 3D Model -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-3d-container">
+            <model-viewer 
+                src="assets/santa.glb"
+                alt="Featured 3D Model"
+                id="heroModelViewer"
+                auto-rotate
+                camera-controls
+                touch-action="none"
+                interaction-policy="allow-when-focused"
+                ar
+                ar-modes="webxr scene-viewer quick-look"
+                shadow-intensity="1.5"
+                exposure="1.2"
+                environment-image="neutral"
+                field-of-view="45deg"
+                min-camera-orbit="auto auto 1m"
+                max-camera-orbit="auto auto 10m"
+                camera-orbit="0deg 75deg 3m"
+                class="hero-3d-model">
+                <div slot="poster" class="hero-poster">
+                    <div class="loading-spinner"></div>
+                    <p>Loading 3D Model...</p>
+                </div>
+            </model-viewer>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="container">
+                <h1 class="hero-title">3D Model Store</h1>
+                <p class="hero-subtitle">Explore premium 3D models with interactive viewing. Click to interact, drag to rotate, scroll to zoom.</p>
+                <div class="hero-buttons">
+                    <a href="#models" class="btn btn-primary">Browse Models</a>
+                    <button class="btn btn-secondary" id="resetCameraBtn">Reset View</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Model Controls Panel -->
+        <div class="model-controls-panel" id="controlsPanel">
+            <div class="controls-header">
+                <h3>3D Controls</h3>
+                <button class="controls-toggle" id="controlsToggle">−</button>
+            </div>
+            <div class="controls-content" id="controlsContent">
+                <div class="control-group">
+                    <label>Auto Rotate</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoRotateToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label>Exposure: <span id="exposureValue">1.2</span></label>
+                    <input type="range" id="exposureSlider" min="0.5" max="2" step="0.1" value="1.2">
+                </div>
+                <div class="control-group">
+                    <label>Shadow: <span id="shadowValue">1.5</span></label>
+                    <input type="range" id="shadowSlider" min="0" max="3" step="0.1" value="1.5">
+                </div>
+                <div class="control-group">
+                    <label>FOV: <span id="fovValue">45</span>°</label>
+                    <input type="range" id="fovSlider" min="30" max="90" step="5" value="45">
+                </div>
+                <div class="control-group">
+                    <button class="btn-control" id="resetViewBtn">Reset</button>
+                    <button class="btn-control" id="fitModelBtn">Fit</button>
+                </div>
+                <div class="control-group">
+                    <button class="btn-control btn-ar" id="arButton">View in AR</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Explore Models</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section" id="categories">
+        <div class="container">
+            <h2 class="section-title">Browse by Category</h2>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Models Gallery Section -->
+    <section class="models-section" id="models">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">3D Model Collection</h2>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="electronics">Bicycles</button>
+                    <button class="filter-btn" data-category="furniture">Furniture</button>
+                    <button class="filter-btn" data-category="accessories">Accessories</button>
+                    <button class="filter-btn" data-category="gadgets">Gadgets</button>
+                </div>
+            </div>
+            <div class="models-grid" id="modelsGrid">
+                <!-- 3D Models will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">About 3D Model Store</h2>
+                <p>We specialize in providing high-quality 3D models with interactive viewing experiences. Every model in our store can be explored in full 3D, allowing you to examine every detail before purchase.</p>
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Interactive 3D</h3>
+                        <p>View and interact with every model</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">📱</div>
+                        <h3>AR Support</h3>
+                        <p>View models in augmented reality</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">⚡</div>
+                        <h3>High Quality</h3>
+                        <p>Premium 3D models only</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💾</div>
+                        <h3>Instant Download</h3>
+                        <p>Get your models immediately</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>3D Model Store</h3>
+                    <p>Your destination for premium 3D models with interactive viewing experiences.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#models">3D Models</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">License</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 3D Model Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Model Viewer Modal -->
+    <div class="model-viewer-modal" id="modelViewerModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <h2 id="modalModelName">Model Name</h2>
+                <p id="modalModelDescription">Model Description</p>
+                <div class="modal-price">$<span id="modalModelPrice">0.00</span></div>
+            </div>
+            <div class="modal-3d-viewer">
+                <model-viewer 
+                    id="modalModelViewer"
+                    alt="3D Model"
+                    auto-rotate
+                    camera-controls
+                    touch-action="none"
+                    interaction-policy="allow-when-focused"
+                    ar
+                    ar-modes="webxr scene-viewer quick-look"
+                    shadow-intensity="1.5"
+                    exposure="1.2"
+                    environment-image="neutral"
+                    field-of-view="45deg"
+                    min-camera-orbit="auto auto 1m"
+                    max-camera-orbit="auto auto 10m"
+                    camera-orbit="0deg 75deg 3m"
+                    class="modal-3d-model">
+                    <div slot="poster" class="modal-poster">
+                        <div class="loading-spinner"></div>
+                        <p>Loading 3D Model...</p>
+                    </div>
+                </model-viewer>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="modalAddToCart">Add to Cart</button>
+                <button class="btn btn-secondary" id="modalARBtn">View in AR</button>
+                <button class="btn btn-secondary" id="modalFullscreenBtn">Fullscreen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

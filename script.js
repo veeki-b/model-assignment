@@ -269,7 +269,7 @@ function openModelViewer(modelId) {
     };
 
     modalARBtn.onclick = () => {
-        modalViewer.activateAR();
+        activateARWithFallback(modalViewer);
     };
 
     modalFullscreenBtn.onclick = () => {
@@ -337,6 +337,30 @@ function showNotification(message) {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
     }, 3000);
+}
+
+// AR Helpers
+function activateARWithFallback(modelViewer) {
+    if (!modelViewer) return;
+
+    const activate = () => {
+        if (modelViewer.canActivateAR === false) {
+            showNotification('AR is not available on this device/browser.');
+            return;
+        }
+
+        if (typeof modelViewer.activateAR === 'function') {
+            modelViewer.activateAR();
+        } else {
+            showNotification('AR component is still loading. Please try again.');
+        }
+    };
+
+    if (customElements.get('model-viewer')) {
+        activate();
+    } else {
+        customElements.whenDefined('model-viewer').then(activate);
+    }
 }
 
 // Initialize Hero Model Controls
@@ -434,7 +458,7 @@ function initializeHeroModelControls() {
     const arButton = document.getElementById('arButton');
     if (arButton) {
         arButton.addEventListener('click', () => {
-            heroModel.activateAR();
+            activateARWithFallback(heroModel);
         });
     }
 
